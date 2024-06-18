@@ -109,18 +109,19 @@ function organizeMeetings(topics: Topic[]): OrganizedMeeting[] {
         usedIndices.add(i);
       }
     }
-    return sum === targetTime ? combination : null;
+    // return sum === targetTime ? combination : null;
+    return combination;
   }
 
   while (usedIndices.size < topics.length) {
-    const threeHourMeeting = findCombination(180);
-    if (threeHourMeeting) {
-      meetings.push({schedule: 'morning', topics: threeHourMeeting});
+    const threeHourMeetingMorning = findCombination(180);
+    if (threeHourMeetingMorning) {
+      meetings.push({schedule: 'morning', topics: threeHourMeetingMorning});
     }
 
-    const fourHourMeeting = findCombination(240);
-    if (fourHourMeeting) {
-      meetings.push({schedule: 'afternoon', topics: fourHourMeeting});
+    const fourHourMeetingAfternoon = findCombination(240);
+    if (fourHourMeetingAfternoon) {
+      meetings.push({schedule: 'afternoon', topics: fourHourMeetingAfternoon});
     }
   }
 
@@ -157,11 +158,11 @@ CHARACTERIZATION OF NTC TEMPERATURE SENSOR 45min
 LEARNING STRATEGIES THAT CONTRIBUTE TO ACADEMIC EFFICIENCY
 IN RELATION TO THE BUSINESS SCHOOL STUDENT'S LEARNING
 STYLES 30min
-STUDENTS' TEAM-LEARNING INSPIRES CREATIVITY 30min
-FLIPPED CLASSROOM ASSESSMENT: A LEARNING PROCESS
-APPROACH 60min
-OPEN PROFESSIONAL DEVELOPMENT OF MATH TEACHERS THROUGH
-AN ONLINE COURSE 30min
-GENERATING GRAPHS IN VIRTUAL REALITY 30min`
+STUDENTS' TEAM-LEARNING INSPIRES CREATIVITY 30min`
 
 
+//FLIPPED CLASSROOM ASSESSMENT: A LEARNING PROCESS
+// APPROACH 60min
+// OPEN PROFESSIONAL DEVELOPMENT OF MATH TEACHERS THROUGH
+// AN ONLINE COURSE 30min
+// GENERATING GRAPHS IN VIRTUAL REALITY 30min
