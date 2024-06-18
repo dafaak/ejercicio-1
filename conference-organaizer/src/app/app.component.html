@@ -1,9 +1,15 @@
 <div>
-  <form >
+  <form>
     <input type="file" [multiple]="false" (change)="onChange($event)">
   </form>
   <button (click)="organizarEvento()">Organizar</button>
 </div>
 
+<div *ngIf="topics.length>0">
+  <ul *ngFor="let topic of topics">
+    <li><b>{{topic.name}}</b></li>
+
+  </ul>
+</div>
 
 <router-outlet></router-outlet>

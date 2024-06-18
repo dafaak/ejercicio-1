@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { EventOrganizer } from "./models/event-organizer.class";
 import { Conference } from "./models/conference.class";
 import { FormControl, FormGroup } from "@angular/forms";
+import { Topic } from "./models/topic.class";
 
 @Component({
   selector: 'app-root',
@@ -13,6 +14,7 @@ export class AppComponent implements OnInit {
   eventOrganizer!: EventOrganizer;
   file?: File;
   fileContent?: string;
+  topics: Topic[] = [];
 
   ngOnInit() {
 
@@ -62,8 +64,9 @@ export class AppComponent implements OnInit {
       }
     )
 
-    const topics = this.eventOrganizer.organizeConferencesInTopics()
-    for (let topic of topics) {
+    this.topics = this.eventOrganizer.organizeConferencesInTopics()
+
+    for (let topic of this.topics) {
       console.log(`------------------${topic.name}------------------`)
       for (let activity of topic.activities) {
         if (activity instanceof Conference) {
