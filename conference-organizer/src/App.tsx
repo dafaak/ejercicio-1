@@ -104,7 +104,6 @@ function App() {
     }
 
     setRes(event);
-    console.log(topics);
   }
 
   return (
