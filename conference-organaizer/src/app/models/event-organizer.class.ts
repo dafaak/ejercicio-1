@@ -57,8 +57,10 @@ export class EventOrganizer {
     while (this.usedIndexes.size < this.conferences.length) {
 
       const morningConferences = this.findCombination(this.morningStartTime, this.morningEndTime);
+      this.addSocialEventOrLunch(morningConferences);
 
       const afternoonConferences = this.findCombination(this.afternoonStartTime, this.maxSocialEventTime);
+      this.addSocialEventOrLunch(afternoonConferences);
 
       topics.push(new Topic(`Topic ${topicNumber}`, [...morningConferences, ...afternoonConferences]))
       this.date.setDate(this.date.getDate() + 1);
@@ -92,14 +94,20 @@ export class EventOrganizer {
     }
     // return sum === targetTime ? combination : null;
 
+
+    return combination;
+  }
+
+  addSocialEventOrLunch(combination: Activity[]) {
     const lastConference = combination[combination.length - 1];
     if (lastConference.startTime) {
       const endLastConference = lastConference.startTime?.getTime() + this.converMinutesToMiliseconds(lastConference.time);
       const endDateLastConference = new Date(endLastConference);
+
       // si termina a las 12 agregar el lunch
       if (endDateLastConference.getHours() === this.lunchTime) {
         this.setHour(this.date, this.lunchTime, 0)
-        console.log(this.date);
+
         combination.push(new Activity({
           time: (this.afternoonStartTime - this.lunchTime) * 60,
           type: ActivitieType.LUNCH,
@@ -109,7 +117,7 @@ export class EventOrganizer {
 
       if (this.minSocialEventTime <= endDateLastConference.getHours() && endDateLastConference.getHours() <= this.maxSocialEventTime) {
         this.setHour(this.date, endDateLastConference.getHours(), endDateLastConference.getMinutes())
-        console.log(this.date);
+
         combination.push(new Activity({
           time: 60,
           type: ActivitieType.SOCIAL_EVENT,
@@ -118,7 +126,6 @@ export class EventOrganizer {
       }
 
     }
-    return combination;
   }
 
 }

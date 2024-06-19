@@ -9,42 +9,13 @@ import { Topic } from "./models/topic.class";
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = 'conference-organaizer';
   eventOrganizer!: EventOrganizer;
   file?: File;
   fileContent?: string;
   topics: Topic[] = [];
-
-  ngOnInit() {
-
-    // const conferences: Conference[] = data.map(conference => new Conference(conference.time, conference.topic))
-    // this.eventOrganizer = new EventOrganizer({
-    //     conferences,
-    //     morningStartTime: 9,
-    //     morningEndTime: 12,
-    //     lunchTime: 12,
-    //     minSocialEventTime: 16,
-    //     maxSocialEventTime: 17,
-    //     afternoonStartTime: 13,
-    //   }
-    // )
-    //
-    // const topics = this.eventOrganizer.organizeConferencesInTopics()
-    // for (let topic of topics) {
-    //   console.log(`------------------${topic.name}------------------`)
-    //   for (let activity of topic.activities) {
-    //     if (activity instanceof Conference) {
-    //       console.log(`${activity.startTime?.toLocaleTimeString()} ${activity.topic} ${activity.time}min`);
-    //     } else {
-    //       console.log(activity.startTime?.toLocaleTimeString(), activity.type)
-    //     }
-    //
-    //   }
-    // }
-
-
-  }
+  event: { topic: string, activities: string[] }[] = [];
 
   async organizarEvento() {
     if (!this.fileContent) return;
@@ -67,15 +38,23 @@ export class AppComponent implements OnInit {
     this.topics = this.eventOrganizer.organizeConferencesInTopics()
 
     for (let topic of this.topics) {
-      console.log(`------------------${topic.name}------------------`)
+      const event: { topic: string, activities: string[] } = {topic: topic.name, activities: []};
+      
       for (let activity of topic.activities) {
         if (activity instanceof Conference) {
-          console.log(`${activity.startTime?.toLocaleTimeString()} ${activity.topic} ${activity.time}min`);
+          event.activities.push(`${activity.startTime?.toLocaleTimeString('en-US', {
+            hour: "numeric",
+            minute: "numeric"
+          })} ${activity.topic} ${activity.time}min`);
         } else {
-          console.log(activity.startTime?.toLocaleTimeString(), activity.type)
+          event.activities.push(`${activity.startTime?.toLocaleTimeString('en-US', {
+            hour: "numeric",
+            minute: "numeric"
+          })} ${activity.type}`);
         }
 
       }
+      this.event.push(event);
     }
   }
 
