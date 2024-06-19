@@ -1,6 +1,7 @@
 import { Conference } from "./conference.class";
 import { Topic } from "./topic.class";
 import { Activity } from "./activity.class";
+import { ActivitieType } from "../enums/activitie-type.enum";
 
 
 export class EventOrganizer {
@@ -41,11 +42,11 @@ export class EventOrganizer {
     date.setSeconds(0);
   }
 
-  converMinutesToMiliseconds(minutes: number) {
+  private converMinutesToMiliseconds(minutes: number) {
     return minutes * 60 * 1000;
   }
 
-  organizeConferencesInTopics():Topic[] {
+  organizeConferencesInTopics(): Topic[] {
 
     this.setHour(this.date, this.morningStartTime, 0);
     const topics: Topic[] = [];
@@ -58,14 +59,6 @@ export class EventOrganizer {
       const morningConferences = this.findCombination(this.morningStartTime, this.morningEndTime);
 
       const afternoonConferences = this.findCombination(this.afternoonStartTime, this.maxSocialEventTime);
-
-      if (morningConferences) {
-
-      }
-
-      if (afternoonConferences) {
-
-      }
 
       topics.push(new Topic(`Topic ${topicNumber}`, [...morningConferences, ...afternoonConferences]))
       this.date.setDate(this.date.getDate() + 1);
@@ -104,12 +97,12 @@ export class EventOrganizer {
       const endLastConference = lastConference.startTime?.getTime() + this.converMinutesToMiliseconds(lastConference.time);
       const endDateLastConference = new Date(endLastConference);
       // si termina a las 12 agregar el lunch
-      if (endDateLastConference.getHours() === 12) {
+      if (endDateLastConference.getHours() === this.lunchTime) {
         this.setHour(this.date, this.lunchTime, 0)
         console.log(this.date);
         combination.push(new Activity({
           time: (this.afternoonStartTime - this.lunchTime) * 60,
-          type: 'LUNCH',
+          type: ActivitieType.LUNCH,
           startTime: new Date(this.date)
         }))
       }
@@ -119,7 +112,7 @@ export class EventOrganizer {
         console.log(this.date);
         combination.push(new Activity({
           time: 60,
-          type: 'SOCIAL EVENT',
+          type: ActivitieType.SOCIAL_EVENT,
           startTime: new Date(this.date)
         }))
       }

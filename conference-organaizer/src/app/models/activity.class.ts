@@ -1,10 +1,12 @@
+import { ActivitieType } from "../enums/activitie-type.enum";
+
 export class Activity {
   time: number;
-  type: string;
+  type: ActivitieType;
   startTime?: Date;
 
   constructor(params: {
-    time: number, type: string, startTime?: Date
+    time: number, type: ActivitieType, startTime?: Date
   }) {
     this.time = params.time;
     this.type = params.type;

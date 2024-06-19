@@ -1,11 +1,12 @@
 import { Activity } from "./activity.class";
+import { Conference } from "./conference.class";
 
 export class Topic {
   name: string;
-  activities: Activity[];
+  activities: (Activity|Conference)[];
 
   constructor(name: string,
-              activities: Activity[]
+              activities:( Activity|Conference)[]
   ) {
     this.name = name;
 

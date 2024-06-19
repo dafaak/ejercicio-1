@@ -5,11 +5,13 @@
   <button (click)="organizarEvento()">Organizar</button>
 </div>
 
-<div *ngIf="topics.length>0">
-  <ul *ngFor="let topic of topics">
-    <li><b>{{topic.name}}</b></li>
-
-  </ul>
-</div>
+<ng-container *ngIf="topics.length>0">
+  <ng-container *ngFor="let topic of topics">
+    <header><b>{{topic.name}}</b></header>
+    <div *ngFor="let activitie of topic.activities">
+      {{activitie|json}}
+    </div>
+  </ng-container>
+</ng-container>
 
 <router-outlet></router-outlet>
