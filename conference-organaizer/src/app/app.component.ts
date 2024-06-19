@@ -36,10 +36,10 @@ export class AppComponent {
     )
 
     this.topics = this.eventOrganizer.organizeConferencesInTopics()
-
+    this.event = [];
     for (let topic of this.topics) {
       const event: { topic: string, activities: string[] } = {topic: topic.name, activities: []};
-      
+
       for (let activity of topic.activities) {
         if (activity instanceof Conference) {
           event.activities.push(`${activity.startTime?.toLocaleTimeString('en-US', {
@@ -104,81 +104,3 @@ export class AppComponent {
 
 }
 
-const data = [
-  {
-    "topic": "HOW TO USE E-LEARNING FOR TESTING AND ASSESSING LARGECLASSES ",
-    "time": 60
-  },
-  {
-    "topic": "THREE-DIMENSIONAL COLLABORATIVE VIRTUAL ENVIRONMENTS TOENHANCE LEARNING MATHEMATICS ",
-    "time": 45
-  },
-  {
-    "topic": "DO STUDENT RESPONSES DECREASE IF TEACHERS KEEP ASKINGQUESTIONS THROUGH STUDENT RESPONSE SYSTEMS: AQUANTITATIVE RESEARCH ",
-    "time": 30
-  },
-  {
-    "topic": "A SEQUENTIAL ANALYSIS OF TEACHING BEHAVIORS TOWARD THEUSE OF BLACKBOARD LEARNING MANAGEMENT SYSTEM ",
-    "time": 45
-  },
-  {
-    "topic": "THE UAV SIMULATION COMPLEX FOR OPERATOR TRAINING ",
-    "time": 45
-  },
-  {
-    "topic": "THE IMPACT OF E-LEARNING ON LEARNER KNOWLEDGE SHARING QUALITY ",
-    "time": 60
-  },
-  {
-    "topic": "ASSESSING OPEN-BOOK-OPEN-WEB EXAM IN HIGH SCHOOLS: THECASE OF A DEVELOPING COUNTRY ",
-    "time": 60
-  },
-  {
-    "topic": "RESEARCH ON CHANGE AND GROWTH OF STUDENTS AND TEACHERSEXPERIENCED PROBLEM BASED LEARNING ",
-    "time": 45
-  },
-  {
-    "topic": "E-LEARNING ASSISTED DRAMATIZATION FOR COMMUNICATIVELANGUAGE ABILITY AND COLLABORATIVE LEARNING ",
-    "time": 30
-  },
-  {
-    "topic": "LEARNING READINESS WHEN SHARING KNOWLEDGE WHILE ELEARNING ",
-    "time": 30
-  },
-  {
-    "topic": "LEARNING RELATED DEVICE USAGE OF GERMAN AND INDIANSTUDENTS ",
-    "time": 45
-  },
-  {
-    "topic": "TWENTY-FIRST CENTURY INTERVIEWING FOR TWENTY-FIRSTCENTURY JOBS. ARE WE PREPARING OUR STUDENTS FOR TODAY'SJOB MARKET? ",
-    "time": 60
-  },
-  {
-    "topic": "ONLINE GRADUATE DEGREES: PERCEPTIONS OF MOROCCANUNIVERSITY STUDENTS ",
-    "time": 60
-  },
-  {
-    "topic": "DEVELOPMENT OF AN ONLINE LABORATORY: APPLICATION FOR THECHARACTERIZATION OF NTC TEMPERATURE SENSOR ",
-    "time": 45
-  },
-  {
-    "topic": "LEARNING STRATEGIES THAT CONTRIBUTE TO ACADEMIC EFFICIENCYIN RELATION TO THE BUSINESS SCHOOL STUDENT'S LEARNINGSTYLES ",
-    "time": 30
-  },
-  {
-    "topic": "STUDENTS' TEAM-LEARNING INSPIRES CREATIVITY ",
-    "time": 30
-  },
-  // {
-  //   "topic": "FLIPPED CLASSROOM ASSESSMENT: A LEARNING PROCESSAPPROACH ",
-  //   "time": 60
-  // },
-  // {
-  //   "topic": "OPEN PROFESSIONAL DEVELOPMENT OF MATH TEACHERS THROUGHAN ONLINE COURSE ",
-  //   "time": 30
-  // },
-  // {
-  //   "topic": "GENERATING GRAPHS IN VIRTUAL REALITY ",
-  //   "time": 30
-  // }
-]
