@@ -9,9 +9,16 @@
 }
 
 
-.form > div >small{
- font-size: small;
-    color:#AEC3B0
+.form > div > small {
+    font-size: small;
+    color: #AEC3B0
 
 }
 
+
+.invalidConferences > h3 {
+    color: #AEC3B0
+}
+.invalidConferences > div > p>span {
+    color: #598392
+}
