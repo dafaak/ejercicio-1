@@ -9,6 +9,7 @@ function App() {
 
   const [fileContent, setFileContent] = useState<string>('');
   const [res, setRes] = useState<{ topic: string, activities: string[] }[]>([]);
+  const [invalidConferences, setinvalidConferences] = useState<Conference[]>([]);
 
   const maxFileSize = 1048576;
 
@@ -87,6 +88,9 @@ function App() {
 
     topics = eventOrganizer.organizeConferencesInTopics()
 
+    const invalidConferences = eventOrganizer.invalidConferences;
+    setinvalidConferences(invalidConferences);
+
     let event: { topic: string, activities: string[] }[] = [];
 
     for (let topic of topics) {
@@ -126,12 +130,24 @@ function App() {
             </div>
 
           </form>
-          {fileContent &&
-              <button className={"buttonOrganizar"} onClick={organizarEvento}>Organizar evento</button>}
-          <div className={"margin1"}>{res.map((topic, index) => <>
+          {fileContent && <button className={"buttonOrganizar"} onClick={organizarEvento}>Organizar evento</button>}
+
+          <div className={"margin1"}> {res.map((topic, index) => <>
             <h3 key={topic.topic}>{topic.topic}</h3>
             {topic.activities.map((activitie, indexActivitie) => <p
                 key={`${index}${indexActivitie}`}>{activitie}</p>)}</>)}</div>
+
+          {invalidConferences.length > 0 && <>
+              <div className={"invalidConferences"}><h3>INVALID CONFERENCES</h3>
+                  <div className={"margin1"}>{invalidConferences.map((invalidConference, indexInvalidConference) => <p
+                      key={indexInvalidConference}>{invalidConference.topic} <span>{invalidConference.time}min</span>
+                  </p>)
+
+                  }</div>
+              </div>
+          </>}
+
+
         </div>
       </>
   )
