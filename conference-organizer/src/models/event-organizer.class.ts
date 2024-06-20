@@ -5,15 +5,16 @@ import { ActivitieType } from "../enums/activitie-type.enum";
 
 
 export class EventOrganizer {
-  private conferences: Conference[];
-  private morningStartTime: number;
-  private morningEndTime: number;
-  private afternoonStartTime: number;
-  private lunchTime: number;
-  private minSocialEventTime: number;
-  private maxSocialEventTime: number;
-  private usedIndexes = new Set();
-  private date = new Date();
+  private _conferences: Conference[];
+  private _morningStartTime: number;
+  private _morningEndTime: number;
+  private _afternoonStartTime: number;
+  private _lunchTime: number;
+  private _minSocialEventTime: number;
+  private _maxSocialEventTime: number;
+  private _usedIndexes = new Set();
+  private _date = new Date();
+  private _invalidConferences: Conference[] = [];
 
   constructor(params: {
                 conferences: Conference[],
@@ -25,20 +26,40 @@ export class EventOrganizer {
                 afternoonStartTime: number,
               }
   ) {
-    this.morningStartTime = params.morningStartTime;
-    this.morningEndTime = params.morningEndTime;
-    this.lunchTime = params.lunchTime;
-    this.afternoonStartTime = params.afternoonStartTime;
+    this._morningStartTime = params.morningStartTime;
+    this._morningEndTime = params.morningEndTime;
+    this._lunchTime = params.lunchTime;
+    this._afternoonStartTime = params.afternoonStartTime;
 
-    this.minSocialEventTime = params.minSocialEventTime;
-    this.maxSocialEventTime = params.maxSocialEventTime;
-    this.conferences = params.conferences;
+    this._minSocialEventTime = params.minSocialEventTime;
+    this._maxSocialEventTime = params.maxSocialEventTime;
+    this._conferences = params.conferences;
   }
 
+  public get invalidConferences() {
+    return this._invalidConferences;
+  }
+
+  private findConferencesExceddDuration = (conferences: Conference[]) => {
+    const maxMorningConferenceDuration = (this._morningEndTime - this._morningStartTime) * 60;
+    const maxAfternoonConferenceDuration = (this._maxSocialEventTime - this._afternoonStartTime) * 60;
+    return conferences.filter(conference => {
+      return (conference.time > maxMorningConferenceDuration && conference.time > maxAfternoonConferenceDuration);
+    })
+  }
 
   private cleanData = (conferences: Conference[]) => {
-    const maxMorningConferenceDuration = (this.morningEndTime - this.morningStartTime) * 60;
-    const maxAfternoonConferenceDuration = (this.maxSocialEventTime - this.afternoonStartTime) * 60;
+    const conferencesExceedDuration = this.findConferencesExceddDuration(conferences);
+    if (conferencesExceedDuration.length > 0) {
+      this._invalidConferences = conferencesExceedDuration;
+      this._conferences = this.filterValidConferences(conferences);
+    }
+
+  }
+
+  private filterValidConferences = (conferences: Conference[]) => {
+    const maxMorningConferenceDuration = (this._morningEndTime - this._morningStartTime) * 60;
+    const maxAfternoonConferenceDuration = (this._maxSocialEventTime - this._afternoonStartTime) * 60;
     return conferences.filter(conference => {
       return (conference.time <= maxMorningConferenceDuration && conference.time <= maxAfternoonConferenceDuration);
     })
@@ -56,25 +77,25 @@ export class EventOrganizer {
 
   organizeConferencesInTopics = (): Topic[] => {
 
-    this.conferences = this.cleanData(this.conferences);
+    this.cleanData(this._conferences);
 
-    this.setHour(this.date, this.morningStartTime, 0);
+    this.setHour(this._date, this._morningStartTime, 0);
     const topics: Topic[] = [];
 
     let topicNumber = 1;
 
 
-    while (this.usedIndexes.size < this.conferences.length) {
+    while (this._usedIndexes.size < this._conferences.length) {
 
-      const morningConferences = this.findCombination(this.morningStartTime, this.morningEndTime);
+      const morningConferences = this.findCombination(this._morningStartTime, this._morningEndTime);
       this.addSocialEventOrLunch(morningConferences);
 
-      const afternoonConferences = this.findCombination(this.afternoonStartTime, this.maxSocialEventTime);
+      const afternoonConferences = this.findCombination(this._afternoonStartTime, this._maxSocialEventTime);
       this.addSocialEventOrLunch(afternoonConferences);
 
       topics.push(new Topic(`Topic ${topicNumber}`, [...morningConferences, ...afternoonConferences]))
-      this.date.setDate(this.date.getDate() + 1);
-      this.setHour(this.date, this.morningStartTime);
+      this._date.setDate(this._date.getDate() + 1);
+      this.setHour(this._date, this._morningStartTime);
       topicNumber++;
 
     }
@@ -85,20 +106,20 @@ export class EventOrganizer {
 
     const targetTime = (endTime - startTime) * 60;
 
-    this.setHour(this.date, startTime, 0);
+    this.setHour(this._date, startTime, 0);
 
     const combination: Activity[] = [];
     let sum = 0;
 
-    for (let i = 0; i < this.conferences.length; i++) {
-      if (!this.usedIndexes.has(i) && sum + this.conferences[i].time <= targetTime) {
-        this.conferences[i].startTime = this.date;
-        combination.push(this.conferences[i]);
-        sum += this.conferences[i].time;
-        this.usedIndexes.add(i);
+    for (let i = 0; i < this._conferences.length; i++) {
+      if (!this._usedIndexes.has(i) && sum + this._conferences[i].time <= targetTime) {
+        this._conferences[i].startTime = this._date;
+        combination.push(this._conferences[i]);
+        sum += this._conferences[i].time;
+        this._usedIndexes.add(i);
 
-        const milliseconds = this.date.getTime() + (this.conferences[i].time * 60 * 1000)
-        this.date = new Date(milliseconds);
+        const milliseconds = this._date.getTime() + (this._conferences[i].time * 60 * 1000)
+        this._date = new Date(milliseconds);
       }
     }
 
@@ -112,23 +133,23 @@ export class EventOrganizer {
       const endDateLastConference = new Date(endLastConference);
 
       // si termina a las 12 agregar el lunch
-      if (endDateLastConference.getHours() === this.lunchTime) {
-        this.setHour(this.date, this.lunchTime, 0)
+      if (endDateLastConference.getHours() === this._lunchTime) {
+        this.setHour(this._date, this._lunchTime, 0)
 
         combination.push(new Activity({
-          time: (this.afternoonStartTime - this.lunchTime) * 60,
+          time: (this._afternoonStartTime - this._lunchTime) * 60,
           type: ActivitieType.LUNCH,
-          startTime: new Date(this.date)
+          startTime: new Date(this._date)
         }))
       }
 
-      if (this.minSocialEventTime <= endDateLastConference.getHours() && endDateLastConference.getHours() <= this.maxSocialEventTime) {
-        this.setHour(this.date, endDateLastConference.getHours(), endDateLastConference.getMinutes())
+      if (this._minSocialEventTime <= endDateLastConference.getHours() && endDateLastConference.getHours() <= this._maxSocialEventTime) {
+        this.setHour(this._date, endDateLastConference.getHours(), endDateLastConference.getMinutes())
 
         combination.push(new Activity({
           time: 60,
           type: ActivitieType.SOCIAL_EVENT,
-          startTime: new Date(this.date)
+          startTime: new Date(this._date)
         }))
       }
 
