@@ -10,14 +10,20 @@ function App() {
   const [fileContent, setFileContent] = useState<string>('');
   const [res, setRes] = useState<{ topic: string, activities: string[] }[]>([]);
 
+  const maxFileSize = 1048576;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      readFile(e.target.files[0]);
+      const isValidFile = validateFileSize(e.target.files[0], maxFileSize)
+      if (isValidFile) readFile(e.target.files[0]);
     }
   };
 
-  function readFile(file: File) {
+  const validateFileSize = (file: File, maxFileSize: number) => {
+    return file.size > maxFileSize ? false : true;
+  }
+
+  const readFile = (file: File) => {
     const reader = new FileReader();
 
 
@@ -30,7 +36,7 @@ function App() {
 
   }
 
-  async function setData() {
+  const setData = (): { topic: string, time: number }[] => {
 
     const topics: {
       topic: string
@@ -56,10 +62,10 @@ function App() {
   }
 
 
-  const organizarEvento = async () => {
+  const organizarEvento = () => {
 
 
-    const topicsFromFile = await setData()
+    const topicsFromFile = setData()
 
     if (!fileContent) return;
     const conferences: Conference[] = topicsFromFile.map(conference => new Conference(conference.time, conference.topic))
@@ -108,16 +114,25 @@ function App() {
 
   return (
       <>
-        <form>
-          <label htmlFor="">Archivo:</label>
-          <input type="file" onChange={handleFileChange} accept={"text/plain"}/>
-        </form>
-        {fileContent && <button onClick={organizarEvento}>Organizar evento</button>}
-        <div>{res.map((topic, index) => <>
-          <header key={topic.topic}>{topic.topic}</header>
-          {topic.activities.map((activitie, indexActivitie) => <div
-              key={`${index}${indexActivitie}`}>{`${index}${indexActivitie}`} {activitie}</div>)}</>)}</div>
+        <div className={"container"}>
+          <form className={"form"}>
+            <div>
+              <label>Archivo:</label>
+            </div>
+            <div>
+              <input type="file" onChange={handleFileChange} accept={"text/plain"}/>
+              <br/>
+              <small>El archivo debe tener el formato "tema 'Tiempo'min" (tiempo en minutos) por cada tema</small>
+            </div>
 
+          </form>
+          {fileContent &&
+              <button className={"buttonOrganizar"} onClick={organizarEvento}>Organizar evento</button>}
+          <div className={"margin1"}>{res.map((topic, index) => <>
+            <h3 key={topic.topic}>{topic.topic}</h3>
+            {topic.activities.map((activitie, indexActivitie) => <p
+                key={`${index}${indexActivitie}`}>{activitie}</p>)}</>)}</div>
+        </div>
       </>
   )
 }
