@@ -109,7 +109,8 @@ function App() {
   return (
       <>
         <form>
-          <input type="file" onChange={handleFileChange}/>
+          <label htmlFor="">Archivo:</label>
+          <input type="file" onChange={handleFileChange} accept={"text/plain"}/>
         </form>
         {fileContent && <button onClick={organizarEvento}>Organizar evento</button>}
         <div>{res.map((topic, index) => <>
