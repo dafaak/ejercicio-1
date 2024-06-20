@@ -36,17 +36,27 @@ export class EventOrganizer {
   }
 
 
-  private setHour(date: Date, hour: number, min = 0) {
+  private cleanData = (conferences: Conference[]) => {
+    const maxMorningConferenceDuration = (this.morningEndTime - this.morningStartTime) * 60;
+    const maxAfternoonConferenceDuration = (this.maxSocialEventTime - this.afternoonStartTime) * 60;
+    return conferences.filter(conference => {
+      return (conference.time <= maxMorningConferenceDuration && conference.time <= maxAfternoonConferenceDuration);
+    })
+  }
+
+  private setHour = (date: Date, hour: number, min = 0) => {
     date.setHours(hour);
     date.setMinutes(min);
     date.setSeconds(0);
   }
 
-  private converMinutesToMiliseconds(minutes: number) {
+  private converMinutesToMiliseconds = (minutes: number) => {
     return minutes * 60 * 1000;
   }
 
-  organizeConferencesInTopics(): Topic[] {
+  organizeConferencesInTopics = (): Topic[] => {
+
+    this.conferences = this.cleanData(this.conferences);
 
     this.setHour(this.date, this.morningStartTime, 0);
     const topics: Topic[] = [];
@@ -71,7 +81,7 @@ export class EventOrganizer {
     return topics;
   }
 
-  private findCombination(startTime: number, endTime: number): Activity[] {
+  private findCombination = (startTime: number, endTime: number): Activity[] => {
 
     const targetTime = (endTime - startTime) * 60;
 
@@ -95,9 +105,9 @@ export class EventOrganizer {
     return combination;
   }
 
-  addSocialEventOrLunch(combination: Activity[]) {
+  addSocialEventOrLunch = (combination: Activity[]) => {
     const lastConference = combination[combination.length - 1];
-    if (lastConference.startTime) {
+    if (lastConference?.startTime) {
       const endLastConference = lastConference.startTime?.getTime() + this.converMinutesToMiliseconds(lastConference.time);
       const endDateLastConference = new Date(endLastConference);
 
