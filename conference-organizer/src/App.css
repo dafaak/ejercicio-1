@@ -1,0 +1,17 @@
+.container {
+    margin-left: 2rem;
+    margin-top: 3rem;
+}
+
+.buttonOrganizar {
+    background-color: #598392;
+    margin-top: 1rem;
+}
+
+
+.form > div >small{
+ font-size: small;
+    color:#AEC3B0
+
+}
+
