@@ -3,6 +3,9 @@ import './App.css'
 import { Conference } from "./models/conference.class";
 import { EventOrganizer } from "./models/event-organizer.class";
 import { Topic } from "./models/topic.class";
+import Form from "./components/form";
+import Event from "./components/event";
+import InvalidConferences from "./components/invalid-conferences";
 
 
 function App() {
@@ -13,29 +16,6 @@ function App() {
 
   const maxFileSize = 1048576;
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const isValidFile = validateFileSize(e.target.files[0], maxFileSize)
-      if (isValidFile) readFile(e.target.files[0]);
-    }
-  };
-
-  const validateFileSize = (file: File, maxFileSize: number) => {
-    return file.size > maxFileSize ? false : true;
-  }
-
-  const readFile = (file: File) => {
-    const reader = new FileReader();
-
-
-    reader.onload = () => {
-      const fileContentRes = reader.result as string;
-      if (fileContentRes) setFileContent(fileContentRes as string)
-    };
-
-    reader.readAsText(file);
-
-  }
 
   const setData = (): { topic: string, time: number }[] => {
 
@@ -115,37 +95,20 @@ function App() {
 
     setRes(event);
   }
+  const handleOnFileContentChange = (fileContent: string) => {
+    setFileContent(fileContent);
+  }
 
   return (
       <>
         <div className={"container"}>
-          <form className={"form"}>
-            <div>
-              <label>Archivo:</label>
-            </div>
-            <div>
-              <input type="file" onChange={handleFileChange} accept={"text/plain"}/>
-              <br/>
-              <small>El archivo debe tener el formato "tema 'Tiempo'min" (tiempo en minutos) por cada tema</small>
-            </div>
+          <Form onFileContentChange={handleOnFileContentChange} maxFileSize={maxFileSize} accept={"text/plain"}></Form>
 
-          </form>
           {fileContent && <button className={"buttonOrganizar"} onClick={organizarEvento}>Organizar evento</button>}
+          <Event events={res}></Event>
 
-          <div className={"margin1"}> {res.map((topic, index) => <>
-            <h3 key={topic.topic}>{topic.topic}</h3>
-            {topic.activities.map((activitie, indexActivitie) => <p
-                key={`${index}${indexActivitie}`}>{activitie}</p>)}</>)}</div>
-
-          {invalidConferences.length > 0 && <>
-              <div className={"invalidConferences"}><h3>INVALID CONFERENCES</h3>
-                  <div className={"margin1"}>{invalidConferences.map((invalidConference, indexInvalidConference) => <p
-                      key={indexInvalidConference}>{invalidConference.topic} <span>{invalidConference.time}min</span>
-                  </p>)
-
-                  }</div>
-              </div>
-          </>}
+          {invalidConferences.length > 0 &&
+              <InvalidConferences invalidConferences={invalidConferences}></InvalidConferences>}
 
 
         </div>
