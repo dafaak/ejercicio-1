@@ -10,3 +10,7 @@
 - ejecutar el comando `npm i` para instalarlas dependencias
 - ejecutar el comando `npm run dev` para levantar el app
 - en el navegador dirigirse a `http://localhost:5173/`
+
+### Nota
+
+Se puede utilizar el archivo test data para probar el app 
